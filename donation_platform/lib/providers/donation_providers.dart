@@ -1,3 +1,4 @@
+import 'package:donation_platform/data/models/donation/donation_update.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:donation_platform/data/models/donation/donation.dart';
 import 'package:donation_platform/data/repositories/donation_repository.dart';
@@ -8,33 +9,37 @@ final donationRepositoryProvider = Provider<DonationRepository>((ref) {
 });
 
 // Provider for donation categories
-final donationCategoriesProvider = FutureProvider<List<DonationCategory>>((ref) async {
+final donationCategoriesProvider =
+    FutureProvider<List<DonationCategory>>((ref) async {
   final repository = ref.watch(donationRepositoryProvider);
   return await repository.getDonationCategories();
 });
 
 // Provider for donor's donations
-final donorDonationsProvider = FutureProvider.family<List<Donation>, String>((ref, donorId) async {
+final donorDonationsProvider =
+    FutureProvider.family<List<Donation>, String>((ref, donorId) async {
   if (donorId.isEmpty) {
     return [];
   }
-  
+
   final repository = ref.watch(donationRepositoryProvider);
   return await repository.getDonationsByDonor(donorId);
 });
 
 // Provider for organization's donations
-final organizationDonationsProvider = FutureProvider.family<List<Donation>, String>((ref, organizationId) async {
+final organizationDonationsProvider =
+    FutureProvider.family<List<Donation>, String>((ref, organizationId) async {
   if (organizationId.isEmpty) {
     return [];
   }
-  
+
   final repository = ref.watch(donationRepositoryProvider);
   return await repository.getDonationsByOrganization(organizationId);
 });
 
 // Provider for getting a specific donation
-final donationProvider = FutureProvider.family<Donation?, String>((ref, donationId) async {
+final donationProvider =
+    FutureProvider.family<Donation?, String>((ref, donationId) async {
   final repository = ref.watch(donationRepositoryProvider);
   return await repository.getDonationById(donationId);
 });
@@ -44,13 +49,13 @@ class DonationState {
   final bool isLoading;
   final String? errorMessage;
   final Donation? lastCreatedDonation;
-  
+
   DonationState({
     this.isLoading = false,
     this.errorMessage,
     this.lastCreatedDonation,
   });
-  
+
   DonationState copyWith({
     bool? isLoading,
     String? errorMessage,
@@ -67,9 +72,9 @@ class DonationState {
 // Notifier for creating donations
 class DonationNotifier extends StateNotifier<DonationState> {
   final DonationRepository _repository;
-  
+
   DonationNotifier(this._repository) : super(DonationState());
-  
+
   // Create monetary donation
   Future<bool> createMonetaryDonation({
     required String donorId,
@@ -84,7 +89,7 @@ class DonationNotifier extends StateNotifier<DonationState> {
     String? recurringFrequency,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     try {
       final donation = await _repository.createMonetaryDonation(
         donorId: donorId,
@@ -98,23 +103,23 @@ class DonationNotifier extends StateNotifier<DonationState> {
         isRecurring: isRecurring,
         recurringFrequency: recurringFrequency,
       );
-      
+
       state = state.copyWith(
         isLoading: false,
         lastCreatedDonation: donation,
       );
-      
+
       return true;
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'Failed to create donation: ${e.toString()}',
       );
-      
+
       return false;
     }
   }
-  
+
   // Create non-monetary donation (items)
   Future<bool> createItemDonation({
     required String donorId,
@@ -131,7 +136,7 @@ class DonationNotifier extends StateNotifier<DonationState> {
     DateTime? pickupDate,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     try {
       final donation = await _repository.createItemDonation(
         donorId: donorId,
@@ -147,23 +152,58 @@ class DonationNotifier extends StateNotifier<DonationState> {
         pickupAddress: pickupAddress,
         pickupDate: pickupDate,
       );
-      
+
       state = state.copyWith(
         isLoading: false,
         lastCreatedDonation: donation,
       );
-      
+
       return true;
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'Failed to create donation: ${e.toString()}',
       );
-      
+
       return false;
     }
   }
-  
+
+// Add this method to your DonationNotifier class in donation_providers.dart
+
+  Future<bool> addDonationUpdate(DonationUpdate update) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    try {
+      final result = await _repository.addDonationUpdate(update);
+      state = state.copyWith(isLoading: false);
+      return result;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to add donation update: ${e.toString()}',
+      );
+      return false;
+    }
+  }
+
+  // Add this method to your DonationNotifier class
+  Future<bool> updateDonationStatus(String donationId, String status) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+
+    try {
+      final result = await _repository.updateDonationStatus(donationId, status);
+      state = state.copyWith(isLoading: false);
+      return result;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to update donation status: ${e.toString()}',
+      );
+      return false;
+    }
+  }
+
   // Clear last created donation
   void clearLastCreatedDonation() {
     state = state.copyWith(
@@ -173,7 +213,8 @@ class DonationNotifier extends StateNotifier<DonationState> {
   }
 }
 
-final donationNotifierProvider = StateNotifierProvider<DonationNotifier, DonationState>((ref) {
+final donationNotifierProvider =
+    StateNotifierProvider<DonationNotifier, DonationState>((ref) {
   final repository = ref.watch(donationRepositoryProvider);
   return DonationNotifier(repository);
 });

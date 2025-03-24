@@ -5,7 +5,7 @@ import 'package:donation_platform/ui/donor/widgets/category_filter_chips.dart';
 import 'package:donation_platform/ui/donor/widgets/organization_card.dart';
 import 'package:donation_platform/ui/common/widgets/inputs/search_bar.dart';
 import 'package:donation_platform/providers/auth_providers.dart';
-import 'package:donation_platform/data/models/organization/organization.dart';
+// import 'package:donation_platform/data/models/organization/organization.dart';
 import 'package:donation_platform/providers/organization_providers.dart';
 import 'package:donation_platform/ui/common/widgets/loading_indicators.dart';
 import 'package:donation_platform/ui/common/widgets/error_displays.dart';
@@ -15,29 +15,31 @@ class DiscoverOrganizationsScreen extends ConsumerStatefulWidget {
   const DiscoverOrganizationsScreen({super.key});
 
   @override
-  ConsumerState<DiscoverOrganizationsScreen> createState() => _DiscoverOrganizationsScreenState();
+  ConsumerState<DiscoverOrganizationsScreen> createState() =>
+      _DiscoverOrganizationsScreenState();
 }
 
-class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizationsScreen> {
+class _DiscoverOrganizationsScreenState
+    extends ConsumerState<DiscoverOrganizationsScreen> {
   final _searchController = TextEditingController();
   String _selectedCategory = '';
-  
+
   @override
   void initState() {
     super.initState();
   }
-  
+
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authStateProvider).user;
     final organizationsAsync = ref.watch(nearbyOrganizationsProvider);
-    
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -57,21 +59,31 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                         children: [
                           Text(
                             'Hello ${user?.fullName.split(' ')[0] ?? 'there'}!',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Make a difference today',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color
+                                      ?.withOpacity(0.7),
+                                ),
                           ),
                         ],
                       ),
                     ),
-                    
+
                     // Notifications button
                     IconButton(
                       icon: const Icon(Icons.notifications_outlined),
@@ -82,7 +94,7 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                   ],
                 ),
               ),
-              
+
               // Search bar
               CustomSearchBar(
                 controller: _searchController,
@@ -91,9 +103,9 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                   // TODO: Implement search functionality
                 },
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Category filters
               CategoryFilterChips(
                 selectedCategory: _selectedCategory,
@@ -104,9 +116,9 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                   // TODO: Apply category filter
                 },
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Organizations list title
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,10 +126,10 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                   Text(
                     'Nearby Organizations',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-                  
+
                   // Map view button
                   TextButton.icon(
                     onPressed: () {
@@ -127,14 +139,15 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                     label: const Text('Map View'),
                     style: TextButton.styleFrom(
                       foregroundColor: AppThemes.primaryColor,
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                     ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Organizations list
               Expanded(
                 child: organizationsAsync.when(
@@ -149,7 +162,7 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                         child: Text('No organizations found nearby'),
                       );
                     }
-                    
+
                     return ListView.builder(
                       itemCount: organizations.length,
                       itemBuilder: (context, index) {
@@ -160,7 +173,8 @@ class _DiscoverOrganizationsScreenState extends ConsumerState<DiscoverOrganizati
                             organization: organization,
                             onTap: () {
                               // Navigate to organization detail
-                              context.push('/donor/organization/${organization.userId}');
+                              context.push(
+                                  '/donor/organization/${organization.userId}');
                             },
                           ),
                         );

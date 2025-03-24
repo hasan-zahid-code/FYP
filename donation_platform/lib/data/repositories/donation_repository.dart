@@ -1,3 +1,4 @@
+import 'package:donation_platform/data/models/donation/donation_update.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:donation_platform/data/models/donation/donation.dart';
 import 'package:donation_platform/data/models/donation/donation_category.dart';
@@ -7,7 +8,7 @@ import 'package:uuid/uuid.dart';
 
 class DonationRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
-  
+
   // Get donation categories
   Future<List<DonationCategory>> getDonationCategories() async {
     try {
@@ -16,13 +17,15 @@ class DonationRepository {
           .select()
           .eq('is_active', true)
           .order('name');
-      
-      return (response as List).map((data) => DonationCategory.fromJson(data)).toList();
+
+      return (response as List)
+          .map((data) => DonationCategory.fromJson(data))
+          .toList();
     } catch (e) {
       throw DatabaseException('Failed to get donation categories: $e');
     }
   }
-  
+
   // Create monetary donation
   Future<Donation> createMonetaryDonation({
     required String donorId,
@@ -43,12 +46,12 @@ class DonationRepository {
           .select('id')
           .eq('name', 'Money')
           .single();
-      
+
       final donationCategoryId = categoryResponse['id'];
-      
+
       // Generate unique ID
       final uuid = const Uuid().v4();
-      
+
       // Create donation
       final donationData = {
         'id': uuid,
@@ -67,18 +70,16 @@ class DonationRepository {
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       };
-      
-      await _supabase
-          .from('donations')
-          .insert(donationData);
-      
+
+      await _supabase.from('donations').insert(donationData);
+
       // Return the created donation
       return await getDonationById(uuid);
     } catch (e) {
       throw DatabaseException('Failed to create donation: $e');
     }
   }
-  
+
   // Create non-monetary donation (food, clothes, etc.)
   Future<Donation> createItemDonation({
     required String donorId,
@@ -97,7 +98,7 @@ class DonationRepository {
     try {
       // Generate unique ID
       final uuid = const Uuid().v4();
-      
+
       // Create donation
       final donationData = {
         'id': uuid,
@@ -119,38 +120,33 @@ class DonationRepository {
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       };
-      
-      await _supabase
-          .from('donations')
-          .insert(donationData);
-      
+
+      await _supabase.from('donations').insert(donationData);
+
       // Return the created donation
       return await getDonationById(uuid);
     } catch (e) {
       throw DatabaseException('Failed to create donation: $e');
     }
   }
-  
+
   // Get donations by donor
   Future<List<Donation>> getDonationsByDonor(String donorId) async {
     try {
-      final response = await _supabase
-          .from('donations')
-          .select('''
+      final response = await _supabase.from('donations').select('''
             *,
             donation_tracking:donation_tracking(*)
-          ''')
-          .eq('donor_id', donorId)
-          .order('created_at', ascending: false);
-      
+          ''').eq('donor_id', donorId).order('created_at', ascending: false);
+
       return _processDonations(response);
     } catch (e) {
       throw DatabaseException('Failed to get donations: $e');
     }
   }
-  
+
   // Get donations by organization
-  Future<List<Donation>> getDonationsByOrganization(String organizationId) async {
+  Future<List<Donation>> getDonationsByOrganization(
+      String organizationId) async {
     try {
       final response = await _supabase
           .from('donations')
@@ -160,13 +156,13 @@ class DonationRepository {
           ''')
           .eq('organization_id', organizationId)
           .order('created_at', ascending: false);
-      
+
       return _processDonations(response);
     } catch (e) {
       throw DatabaseException('Failed to get donations: $e');
     }
   }
-  
+
   // Get donations by campaign
   Future<List<Donation>> getDonationsByCampaign(String campaignId) async {
     try {
@@ -178,49 +174,42 @@ class DonationRepository {
           ''')
           .eq('campaign_id', campaignId)
           .order('created_at', ascending: false);
-      
+
       return _processDonations(response);
     } catch (e) {
       throw DatabaseException('Failed to get donations: $e');
     }
   }
-  
+
   // Get donation by ID
   Future<Donation> getDonationById(String donationId) async {
     try {
-      final response = await _supabase
-          .from('donations')
-          .select('''
+      final response = await _supabase.from('donations').select('''
             *,
             donation_tracking:donation_tracking(*)
-          ''')
-          .eq('id', donationId)
-          .single();
-      
+          ''').eq('id', donationId).single();
+
       // Transform to include tracking and updates if available
       return Donation.fromJson(response);
     } catch (e) {
       throw DatabaseException('Failed to get donation: $e');
     }
   }
-  
+
   // Update donation status
   Future<bool> updateDonationStatus(String donationId, String status) async {
     try {
-      await _supabase
-          .from('donations')
-          .update({
-            'status': status,
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('id', donationId);
-      
+      await _supabase.from('donations').update({
+        'status': status,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', donationId);
+
       return true;
     } catch (e) {
       throw DatabaseException('Failed to update donation status: $e');
     }
   }
-  
+
   // Add tracking update to donation
   Future<bool> addDonationUpdate(DonationUpdate update) async {
     try {
@@ -230,59 +219,56 @@ class DonationRepository {
           .select('id')
           .eq('donation_id', update.donationId)
           .maybeSingle();
-      
+
       String trackingId;
-      
+
       if (trackingResponse == null) {
         // Create tracking record
         final uuid = const Uuid().v4();
-        
-        await _supabase
-            .from('donation_tracking')
-            .insert({
-              'id': uuid,
-              'donation_id': update.donationId,
-              'status': 'received',
-              'updated_by': update.createdBy,
-              'created_at': DateTime.now().toIso8601String(),
-            });
-        
+
+        await _supabase.from('donation_tracking').insert({
+          'id': uuid,
+          'donation_id': update.donationId,
+          'status': 'received',
+          'updated_by': update.createdBy,
+          'created_at': DateTime.now().toIso8601String(),
+        });
+
         trackingId = uuid;
       } else {
         trackingId = trackingResponse['id'];
       }
-      
+
       // Create update
       final uuid = const Uuid().v4();
-      await _supabase
-          .from('donation_updates')
-          .insert({
-            'id': uuid,
-            'donation_id': update.donationId,
-            'title': update.title,
-            'description': update.description,
-            'media_urls': update.mediaUrls,
-            'created_by': update.createdBy,
-            'created_at': DateTime.now().toIso8601String(),
-          });
-      
+      await _supabase.from('donation_updates').insert({
+        'id': uuid,
+        'donation_id': update.donationId,
+        'title': update.title,
+        'description': update.description,
+        'media_urls': update.mediaUrls,
+        'created_by': update.createdBy,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
       return true;
     } catch (e) {
       throw DatabaseException('Failed to add donation update: $e');
     }
   }
-  
+
   // Get donation statistics for a donor
-  Future<Map<String, dynamic>> getDonorDonationStatistics(String donorId) async {
+  Future<Map<String, dynamic>> getDonorDonationStatistics(
+      String donorId) async {
     try {
       // Get total monetary donations
       final monetaryResponse = await _supabase
           .rpc('get_donor_monetary_stats', params: {'donor_user_id': donorId});
-      
+
       // Get donation counts by category
       final categoryResponse = await _supabase
           .rpc('get_donor_category_stats', params: {'donor_user_id': donorId});
-      
+
       return {
         'monetary_stats': monetaryResponse,
         'category_stats': categoryResponse,
@@ -291,12 +277,13 @@ class DonationRepository {
       throw DatabaseException('Failed to get donation statistics: $e');
     }
   }
-  
+
   // Helper method to process donations response
   List<Donation> _processDonations(List<dynamic> response) {
     return response.map((data) {
       // Process tracking data if available
-      if (data['donation_tracking'] != null && data['donation_tracking'].isNotEmpty) {
+      if (data['donation_tracking'] != null &&
+          data['donation_tracking'].isNotEmpty) {
         data['tracking'] = data['donation_tracking'][0];
       }
       return Donation.fromJson(data);

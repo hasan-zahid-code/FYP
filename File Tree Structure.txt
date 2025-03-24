@@ -1,0 +1,103 @@
+File Tree Structure
+
+lib/
+├── config/
+│   ├── app_config.dart
+│   ├── constants.dart
+│   ├── router.dart
+│   └── themes.dart
+├── core/
+│   ├── auth/
+│   │   └── auth_service.dart
+│   ├── services/
+│   │   ├── admin_service.dart
+│   │   ├── api_service.dart
+│   │   ├── donation_service.dart
+│   │   ├── notification_service.dart
+│   │   └── verification_service.dart
+│   └── utils/
+│       ├── exceptions.dart
+│       └── validators.dart
+├── data/
+│   ├── models/
+│   │   ├── common/
+│   │   │   ├── category.dart
+│   │   │   └── notification.dart
+│   │   ├── donation/
+│   │   │   ├── donation.dart
+│   │   │   ├── donation_category.dart
+│   │   │   └── donation_tracking.dart
+│   │   ├── donor/
+│   │   │   └── donor_profile.dart
+│   │   ├── organization/
+│   │   │   ├── board_member.dart
+│   │   │   ├── organization.dart
+│   │   │   └── organization_verification.dart
+│   │   └── user/
+│   │       ├── user.dart
+│   │       └── user_verification.dart
+│   └── repositories/
+│       ├── admin_repository.dart
+│       ├── donation_repository.dart
+│       ├── donor_repository.dart
+│       ├── organization_repository.dart
+│       └── user_repository.dart
+├── main.dart
+├── providers/
+│   ├── admin_providers.dart
+│   ├── auth_providers.dart
+│   ├── donation_providers.dart
+│   ├── donor_providers.dart
+│   ├── organization_providers.dart
+│   └── verification_providers.dart
+└── ui/
+    ├── admin/
+    │   ├── screens/
+    │   │   └── admin_dashboard_screen.dart
+    │   └── widgets/
+    │       ├── admin_drawer.dart
+    │       ├── pending_verifications_card.dart
+    │       ├── platform_stats_card.dart
+    │       └── user_reports_card.dart
+    ├── auth/
+    │   └── screens/
+    │       ├── login_screen.dart
+    │       ├── register_screen.dart
+    │       └── verification_screen.dart
+    ├── common/
+    │   ├── screens/
+    │   │   ├── error_screen.dart
+    │   │   ├── login_screen.dart
+    │   │   ├── onboarding_screen.dart
+    │   │   └── splash_screen.dart
+    │   └── widgets/
+    │       ├── buttons/
+    │       │   ├── primary_button.dart
+    │       │   └── secondary_button.dart
+    │       ├── error_displays.dart
+    │       ├── inputs/
+    │       │   ├── search_bar.dart
+    │       │   └── text_input.dart
+    │       └── loading_indicators.dart
+    ├── donor/
+    │   ├── screens/
+    │   │   ├── discover_organizations_screen.dart
+    │   │   ├── donation_history_screen.dart
+    │   │   ├── donor_home_screen.dart
+    │   │   ├── donor_profile_screen.dart
+    │   │   └── impact_visualization_screen.dart
+    │   └── widgets/
+    │       ├── category_filter_chips.dart
+    │       ├── donation_category_chart.dart
+    │       ├── donation_list_item.dart
+    │       ├── donation_timeline_chart.dart
+    │       ├── donor_bottom_nav.dart
+    │       ├── impact_summary_card.dart
+    │       └── organization_card.dart
+    └── organization/
+        ├── screens/
+        │   └── organization_dashboard_screen.dart
+        └── widgets/
+            ├── donation_stats_card.dart
+            ├── organization_bottom_nav.dart
+            └── verification_status_card.dart

@@ -8,34 +8,72 @@ import 'package:donation_platform/config/constants.dart';
 
 class OrganizationRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
-
-  // Get organization by ID
   Future<Organization?> getOrganizationById(String organizationId) async {
     try {
-      final response = await _supabase.from('organization_profiles').select('''
-            *,
-            users:user_id (*),
-            organization_categories!inner(
-              categories:category_id (*)
-            )
-          ''').eq('user_id', organizationId).single();
+      // Validate input
+      if (organizationId.isEmpty) {
+        throw DatabaseException('Organization ID cannot be empty');
+      }
 
+      // Check authentication status
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw DatabaseException('User is not authenticated');
+      }
+
+      // Query the organization
+      final response = await _supabase
+          .from('organization_profiles')
+          .select('''
+          *,
+          users:user_id (*),
+          organization_categories(
+            categories:category_id (*)
+          )
+        ''')
+          .eq('user_id', organizationId)
+          .maybeSingle(); // Use maybeSingle instead of single to avoid errors when no record is found
+
+      // Handle case where no organization is found
       if (response == null) {
+        print('No organization found with ID: $organizationId');
         return null;
       }
 
-      // Transform to match our model's expected format
-      final transformedResponse = {
-        ...response,
-        'categories': response['organization_categories']
-            .map((oc) => oc['categories'])
-            .toList(),
-      };
+      // Verify the response contains expected data
+      if (response['organization_categories'] == null) {
+        throw DatabaseException(
+            'Organization categories data is missing or malformed');
+      }
 
-      return Organization.fromJson(
-          Map<String, dynamic>.from(transformedResponse));
+      // Transform to match our model's expected format
+      try {
+        final transformedResponse = {
+          ...response,
+          'categories': response['organization_categories']
+              .map((oc) => oc['categories'])
+              .toList(),
+        };
+
+        return Organization.fromJson(
+            Map<String, dynamic>.from(transformedResponse));
+      } catch (transformError) {
+        throw DatabaseException(
+            'Failed to transform organization data: $transformError');
+      }
     } catch (e) {
-      throw DatabaseException('Failed to get organization: $e');
+      // Provide more context in error message
+      if (e is PostgrestException) {
+        print(
+            'Supabase error fetching organization $organizationId: Code ${e.code}, Message: ${e.message}');
+        throw DatabaseException('Database error: ${e.message}');
+      } else if (e is DatabaseException) {
+        print('Database exception for organization $organizationId: $e');
+        rethrow; // Rethrow the already formatted error
+      } else {
+        print('Unexpected error fetching organization $organizationId: $e');
+        throw DatabaseException('Failed to get organization: $e');
+      }
     }
   }
 

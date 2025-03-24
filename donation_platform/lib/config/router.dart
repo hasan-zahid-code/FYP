@@ -133,37 +133,41 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // // Organization Routes
-      // ShellRoute(
-      //   navigatorKey: _organizationNavigatorKey,
-      //   builder: (BuildContext context, GoRouterState state, Widget child) => child,
-      //   routes: [
-      //     GoRoute(
-      //       path: '/organization',
-      //       name: AppRoute.organizationDashboard.name,
-      //       builder: (BuildContext context, GoRouterState state) => const OrganizationDashboardScreen(),
-      //       routes: [
-      //         // Organization sub-routes will be defined here
-      //       ],
-      //     ),
-      //   ],
-      // ),
+      // Organization Routes
+      ShellRoute(
+        navigatorKey: _organizationNavigatorKey,
+        builder: (BuildContext context, GoRouterState state, Widget child) =>
+            child,
+        routes: [
+          GoRoute(
+            path: '/organization',
+            name: AppRoute.organizationDashboard.name,
+            builder: (BuildContext context, GoRouterState state) =>
+                const OrganizationDashboardScreen(),
+            routes: [
+              // Organization sub-routes will be defined here
+            ],
+          ),
+        ],
+      ),
 
-      // // Admin Routes
-      // ShellRoute(
-      //   navigatorKey: _adminNavigatorKey,
-      //   builder: (BuildContext context, GoRouterState state, Widget child) => child,
-      //   routes: [
-      //     GoRoute(
-      //       path: '/admin',
-      //       name: AppRoute.adminDashboard.name,
-      //       builder: (BuildContext context, GoRouterState state) => const AdminDashboardScreen(),
-      //       routes: [
-      //         // Admin sub-routes will be defined here
-      //       ],
-      //     ),
-      //   ],
-      // ),
+      // Admin Routes
+      ShellRoute(
+        navigatorKey: _adminNavigatorKey,
+        builder: (BuildContext context, GoRouterState state, Widget child) =>
+            child,
+        routes: [
+          GoRoute(
+            path: '/admin',
+            name: AppRoute.adminDashboard.name,
+            builder: (BuildContext context, GoRouterState state) =>
+                const AdminDashboardScreen(),
+            routes: [
+              // Admin sub-routes will be defined here
+            ],
+          ),
+        ],
+      ),
     ],
     errorBuilder: (BuildContext context, GoRouterState state) =>
         ErrorScreen(error: state.error),
