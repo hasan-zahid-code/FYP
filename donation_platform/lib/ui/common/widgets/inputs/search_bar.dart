@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:donation_platform/config/themes.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final TextEditingController controller;
@@ -8,7 +7,7 @@ class CustomSearchBar extends StatefulWidget {
   final bool autofocus;
   final bool showFilterButton;
   final VoidCallback? onFilterPressed;
-  
+
   const CustomSearchBar({
     super.key,
     required this.controller,
@@ -25,19 +24,19 @@ class CustomSearchBar extends StatefulWidget {
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
   bool _showClearButton = false;
-  
+
   @override
   void initState() {
     super.initState();
     widget.controller.addListener(_updateClearButtonVisibility);
   }
-  
+
   @override
   void dispose() {
     widget.controller.removeListener(_updateClearButtonVisibility);
     super.dispose();
   }
-  
+
   void _updateClearButtonVisibility() {
     final showClearButton = widget.controller.text.isNotEmpty;
     if (showClearButton != _showClearButton) {
@@ -46,12 +45,12 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       });
     }
   }
-  
+
   void _clearSearch() {
     widget.controller.clear();
     widget.onSearch('');
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,18 +77,19 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           ),
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
           suffixIcon: _showClearButton
-            ? IconButton(
-                icon: const Icon(Icons.clear, color: Colors.grey, size: 20),
-                onPressed: _clearSearch,
-              )
-            : widget.showFilterButton
               ? IconButton(
-                  icon: const Icon(Icons.filter_list, color: Colors.grey),
-                  onPressed: widget.onFilterPressed,
+                  icon: const Icon(Icons.clear, color: Colors.grey, size: 20),
+                  onPressed: _clearSearch,
                 )
-              : null,
+              : widget.showFilterButton
+                  ? IconButton(
+                      icon: const Icon(Icons.filter_list, color: Colors.grey),
+                      onPressed: widget.onFilterPressed,
+                    )
+                  : null,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
         style: const TextStyle(fontSize: 14),
         onSubmitted: widget.onSearch,

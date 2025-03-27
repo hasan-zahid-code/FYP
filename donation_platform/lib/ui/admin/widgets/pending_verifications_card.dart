@@ -11,7 +11,7 @@ class PendingVerificationsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pendingVerificationsAsync = ref.watch(pendingVerificationsProvider);
-    
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -27,7 +27,7 @@ class PendingVerificationsCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.verified_outlined,
                       color: AppThemes.primaryColor,
                       size: 22,
@@ -36,8 +36,8 @@ class PendingVerificationsCard extends ConsumerWidget {
                     Text(
                       'Pending Verifications',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),
@@ -72,20 +72,24 @@ class PendingVerificationsCard extends ConsumerWidget {
                     ),
                   );
                 }
-                
+
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: verifications.length > 3 ? 3 : verifications.length,
+                  itemCount:
+                      verifications.length > 3 ? 3 : verifications.length,
                   itemBuilder: (context, index) {
                     final verification = verifications[index];
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: CircleAvatar(
-                        backgroundColor: AppThemes.primaryColor.withOpacity(0.1),
+                        backgroundColor:
+                            AppThemes.primaryColor.withOpacity(0.1),
                         child: Text(
-                          verification.organizationName.substring(0, 1).toUpperCase(),
-                          style: TextStyle(
+                          verification.organizationName
+                              .substring(0, 1)
+                              .toUpperCase(),
+                          style: const TextStyle(
                             color: AppThemes.primaryColor,
                             fontWeight: FontWeight.bold,
                           ),
@@ -97,22 +101,25 @@ class PendingVerificationsCard extends ConsumerWidget {
                       ),
                       subtitle: Text(
                         'Submitted: ${_formatDate(verification.submittedAt)}',
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
                       trailing: ElevatedButton(
                         onPressed: () {
-                          context.go('/admin/organizations/verification/${verification.id}');
+                          context.go(
+                              '/admin/organizations/verification/${verification.id}');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppThemes.primaryColor,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           textStyle: const TextStyle(fontSize: 12),
                         ),
                         child: const Text('Review'),
                       ),
                       onTap: () {
-                        context.go('/admin/organizations/verification/${verification.id}');
+                        context.go(
+                            '/admin/organizations/verification/${verification.id}');
                       },
                     );
                   },
@@ -124,11 +131,11 @@ class PendingVerificationsCard extends ConsumerWidget {
       ),
     );
   }
-  
+
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays < 1) {
       return 'Today';
     } else if (difference.inDays == 1) {

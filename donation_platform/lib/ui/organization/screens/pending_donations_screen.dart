@@ -150,7 +150,7 @@ class _PendingDonationsScreenState
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'No ${_filterStatus} donations found',
+                            'No $_filterStatus donations found',
                             style: TextStyle(
                               color: Colors.grey.shade600,
                               fontSize: 16,

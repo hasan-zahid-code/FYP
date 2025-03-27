@@ -10,13 +10,13 @@ class AdminDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).user;
-    
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppThemes.primaryColor,
             ),
             child: Column(
@@ -26,33 +26,33 @@ class AdminDrawer extends ConsumerWidget {
                   radius: 30,
                   backgroundColor: Colors.white,
                   child: user?.profileImageUrl != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.network(
-                          user!.profileImageUrl!,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Text(
-                              user.fullName.substring(0, 1).toUpperCase(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: AppThemes.primaryColor,
-                                fontSize: 24,
-                              ),
-                            );
-                          },
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Image.network(
+                            user!.profileImageUrl!,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Text(
+                                user.fullName.substring(0, 1).toUpperCase(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppThemes.primaryColor,
+                                  fontSize: 24,
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Text(
+                          user?.fullName.substring(0, 1).toUpperCase() ?? 'A',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppThemes.primaryColor,
+                            fontSize: 24,
+                          ),
                         ),
-                      )
-                    : Text(
-                        user?.fullName.substring(0, 1).toUpperCase() ?? 'A',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppThemes.primaryColor,
-                          fontSize: 24,
-                        ),
-                      ),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -145,7 +145,7 @@ class AdminDrawer extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildDrawerItem(
     BuildContext context, {
     required IconData icon,

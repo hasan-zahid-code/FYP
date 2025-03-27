@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:donation_platform/config/themes.dart';
-import 'package:donation_platform/data/models/common/category.dart';
 import 'package:donation_platform/providers/organization_providers.dart';
 
 class CategoryFilterChips extends ConsumerWidget {
   final String selectedCategory;
   final Function(String) onCategorySelected;
-  
+
   const CategoryFilterChips({
     super.key,
     required this.selectedCategory,
@@ -17,7 +16,7 @@ class CategoryFilterChips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(categoriesProvider);
-    
+
     return categoriesAsync.when(
       loading: () => const SizedBox(
         height: 40,
@@ -53,23 +52,25 @@ class CategoryFilterChips extends ConsumerWidget {
                     backgroundColor: Colors.white,
                     selectedColor: AppThemes.primaryColor.withOpacity(0.2),
                     labelStyle: TextStyle(
-                      color: selectedCategory.isEmpty 
-                          ? AppThemes.primaryColor 
+                      color: selectedCategory.isEmpty
+                          ? AppThemes.primaryColor
                           : Theme.of(context).textTheme.bodyMedium?.color,
-                      fontWeight: selectedCategory.isEmpty ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: selectedCategory.isEmpty
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
-                        color: selectedCategory.isEmpty 
-                            ? AppThemes.primaryColor 
+                        color: selectedCategory.isEmpty
+                            ? AppThemes.primaryColor
                             : Colors.grey.shade300,
                       ),
                     ),
                   ),
                 );
               }
-              
+
               // Category chips
               final category = categories[index - 1];
               return Padding(
@@ -87,16 +88,18 @@ class CategoryFilterChips extends ConsumerWidget {
                   backgroundColor: Colors.white,
                   selectedColor: AppThemes.primaryColor.withOpacity(0.2),
                   labelStyle: TextStyle(
-                    color: selectedCategory == category.id 
-                        ? AppThemes.primaryColor 
+                    color: selectedCategory == category.id
+                        ? AppThemes.primaryColor
                         : Theme.of(context).textTheme.bodyMedium?.color,
-                    fontWeight: selectedCategory == category.id ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: selectedCategory == category.id
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(
-                      color: selectedCategory == category.id 
-                          ? AppThemes.primaryColor 
+                      color: selectedCategory == category.id
+                          ? AppThemes.primaryColor
                           : Colors.grey.shade300,
                     ),
                   ),

@@ -167,7 +167,7 @@ class AdminRepository {
       } catch (e) {
         // Rollback transaction on error
         await _supabase.rpc('rollback_transaction');
-        throw e;
+        rethrow;
       }
     } catch (e) {
       throw DatabaseException('Failed to approve organization: $e');
@@ -234,7 +234,7 @@ class AdminRepository {
       } catch (e) {
         // Rollback transaction on error
         await _supabase.rpc('rollback_transaction');
-        throw e;
+        rethrow;
       }
     } catch (e) {
       throw DatabaseException('Failed to reject organization: $e');
@@ -292,7 +292,7 @@ class AdminRepository {
       } catch (e) {
         // Rollback transaction on error
         await _supabase.rpc('rollback_transaction');
-        throw e;
+        rethrow;
       }
     } catch (e) {
       throw DatabaseException('Failed to blacklist user: $e');

@@ -8,7 +8,7 @@ import 'package:timeago/timeago.dart' as timeago;
 class DonationListItem extends StatelessWidget {
   final Donation donation;
   final VoidCallback? onTap;
-  
+
   const DonationListItem({
     super.key,
     required this.donation,
@@ -22,10 +22,10 @@ class DonationListItem extends StatelessWidget {
       symbol: donation.currency ?? 'USD',
       decimalDigits: 2,
     );
-    
+
     final statusColor = _getStatusColor(donation.status);
     final statusText = _getStatusText(donation.status);
-    
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -58,9 +58,9 @@ class DonationListItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(width: 12),
-                  
+
                   // Organization name and donation date
                   Expanded(
                     child: Column(
@@ -68,23 +68,27 @@ class DonationListItem extends StatelessWidget {
                       children: [
                         Text(
                           'Donated to Organization', // Replace with actual organization name
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
-                        
                         const SizedBox(height: 4),
-                        
                         Text(
                           timeago.format(donation.createdAt),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withOpacity(0.6),
+                                  ),
                         ),
                       ],
                     ),
                   ),
-                  
+
                   // Status indicator
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -106,14 +110,14 @@ class DonationListItem extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Divider
               Divider(color: Colors.grey.shade200),
-              
+
               const SizedBox(height: 16),
-              
+
               // Donation details
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,19 +129,23 @@ class DonationListItem extends StatelessWidget {
                       Text(
                         'Type',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
-                        ),
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.color
+                                  ?.withOpacity(0.6),
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         isMonetary ? 'Money' : 'Items',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ],
                   ),
-                  
+
                   // Amount/Value
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -145,24 +153,29 @@ class DonationListItem extends StatelessWidget {
                       Text(
                         'Amount',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
-                        ),
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.color
+                                  ?.withOpacity(0.6),
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        isMonetary 
+                        isMonetary
                             ? currencyFormat.format(donation.amount)
                             : donation.quantity?.toString() ?? 'N/A',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppThemes.primaryColor,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppThemes.primaryColor,
+                                ),
                       ),
                     ],
                   ),
                 ],
               ),
-              
+
               // Show recurring badge if applicable
               if (donation.isRecurring) ...[
                 const SizedBox(height: 16),
@@ -178,7 +191,7 @@ class DonationListItem extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.repeat,
                         size: 14,
                         color: AppThemes.secondaryColor,
@@ -186,7 +199,7 @@ class DonationListItem extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         'Recurring ${donation.recurringFrequency ?? 'Monthly'}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppThemes.secondaryColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -196,15 +209,20 @@ class DonationListItem extends StatelessWidget {
                   ),
                 ),
               ],
-              
+
               // If donation has notes, show them
-              if (donation.donationNotes != null && donation.donationNotes!.isNotEmpty) ...[
+              if (donation.donationNotes != null &&
+                  donation.donationNotes!.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Text(
                   'Notes',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
-                  ),
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.color
+                            ?.withOpacity(0.6),
+                      ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -220,7 +238,7 @@ class DonationListItem extends StatelessWidget {
       ),
     );
   }
-  
+
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'completed':
@@ -237,7 +255,7 @@ class DonationListItem extends StatelessWidget {
         return Colors.grey;
     }
   }
-  
+
   String _getStatusText(String status) {
     // Capitalize the first letter
     return status.substring(0, 1).toUpperCase() + status.substring(1);

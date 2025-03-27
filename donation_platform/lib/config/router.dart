@@ -126,7 +126,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: AppRoute.donorHome.name,
             builder: (BuildContext context, GoRouterState state) =>
                 const DonorHomeScreen(),
-            routes: [
+            routes: const [
               // Donor sub-routes will be defined here
             ],
           ),
@@ -144,7 +144,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: AppRoute.organizationDashboard.name,
             builder: (BuildContext context, GoRouterState state) =>
                 const OrganizationDashboardScreen(),
-            routes: [
+            routes: const [
               // Organization sub-routes will be defined here
             ],
           ),
@@ -162,7 +162,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: AppRoute.adminDashboard.name,
             builder: (BuildContext context, GoRouterState state) =>
                 const AdminDashboardScreen(),
-            routes: [
+            routes: const [
               // Admin sub-routes will be defined here
             ],
           ),

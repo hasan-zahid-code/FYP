@@ -12,48 +12,49 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Setup animations
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeIn,
       ),
     );
-    
+
     _animationController.forward();
-    
+
     // Check auth state and navigate accordingly
     _checkAuthState();
   }
-  
+
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _checkAuthState() async {
     // Wait for animation to complete
     await Future.delayed(const Duration(milliseconds: 2000));
-    
+
     // Get auth state
     final authState = ref.read(authStateProvider);
-    
+
     if (!mounted) return;
-    
+
     if (!authState.isOnboarded) {
       context.go('/onboarding');
     } else if (!authState.isAuthenticated) {
@@ -79,7 +80,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: FadeTransition(
@@ -112,30 +113,34 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                     );
                   },
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // App name
                 Text(
                   AppConfig.appName,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppThemes.primaryColor,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: AppThemes.primaryColor,
+                      ),
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Tagline
                 Text(
                   'Connecting hearts, changing lives',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
-                  ),
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.color
+                            ?.withOpacity(0.7),
+                      ),
                 ),
-                
+
                 const SizedBox(height: 48),
-                
+
                 // Loading indicator
                 const CircularProgressIndicator(),
               ],

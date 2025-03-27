@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:donation_platform/data/repositories/admin_repository.dart';
-import 'package:donation_platform/data/models/organization/organization_verification.dart';
 import 'package:donation_platform/data/models/user/user_report.dart';
 
 final adminRepositoryProvider = Provider<AdminRepository>((ref) {
@@ -17,7 +16,7 @@ class PlatformStats {
   final int userReports;
   final int activeCampaigns;
   final int newUsersLast30Days;
-  
+
   PlatformStats({
     required this.totalUsers,
     required this.totalOrganizations,
@@ -28,7 +27,7 @@ class PlatformStats {
     required this.activeCampaigns,
     required this.newUsersLast30Days,
   });
-  
+
   factory PlatformStats.fromJson(Map<String, dynamic> json) {
     return PlatformStats(
       totalUsers: json['total_users'] ?? 0,
@@ -56,7 +55,7 @@ class PendingVerification {
   final String organizationName;
   final DateTime submittedAt;
   final String verificationStage;
-  
+
   PendingVerification({
     required this.id,
     required this.organizationId,
@@ -66,17 +65,21 @@ class PendingVerification {
   });
 }
 
-final pendingVerificationsProvider = FutureProvider<List<PendingVerification>>((ref) async {
+final pendingVerificationsProvider =
+    FutureProvider<List<PendingVerification>>((ref) async {
   final repository = ref.watch(adminRepositoryProvider);
   final verifications = await repository.getPendingVerifications();
-  
-  return verifications.map((verification) => PendingVerification(
-    id: verification.id,
-    organizationId: verification.organizationId,
-    organizationName: verification.contactPersonName, // Using contact person name as placeholder
-    submittedAt: verification.submittedAt,
-    verificationStage: verification.verificationStage ?? 'pending',
-  )).toList();
+
+  return verifications
+      .map((verification) => PendingVerification(
+            id: verification.id,
+            organizationId: verification.organizationId,
+            organizationName: verification
+                .contactPersonName, // Using contact person name as placeholder
+            submittedAt: verification.submittedAt,
+            verificationStage: verification.verificationStage ?? 'pending',
+          ))
+      .toList();
 });
 
 // Pending user reports
@@ -86,7 +89,8 @@ final pendingReportsProvider = FutureProvider<List<UserReport>>((ref) async {
 });
 
 // Organizations list
-final organizationsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+final organizationsProvider =
+    FutureProvider<List<Map<String, dynamic>>>((ref) async {
   final repository = ref.watch(adminRepositoryProvider);
   return await repository.getAllOrganizations();
 });
@@ -101,12 +105,12 @@ final usersProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
 class AdminState {
   final bool isLoading;
   final String? errorMessage;
-  
+
   AdminState({
     this.isLoading = false,
     this.errorMessage,
   });
-  
+
   AdminState copyWith({
     bool? isLoading,
     String? errorMessage,
@@ -121,13 +125,14 @@ class AdminState {
 // Admin notifier for actions
 class AdminNotifier extends StateNotifier<AdminState> {
   final AdminRepository _repository;
-  
+
   AdminNotifier(this._repository) : super(AdminState());
-  
+
   // Approve organization
-  Future<bool> approveOrganization(String organizationId, String adminId, String? notes) async {
+  Future<bool> approveOrganization(
+      String organizationId, String adminId, String? notes) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     try {
       await _repository.approveOrganization(organizationId, adminId, notes);
       state = state.copyWith(isLoading: false);
@@ -140,11 +145,12 @@ class AdminNotifier extends StateNotifier<AdminState> {
       return false;
     }
   }
-  
+
   // Reject organization
-  Future<bool> rejectOrganization(String organizationId, String adminId, String reason) async {
+  Future<bool> rejectOrganization(
+      String organizationId, String adminId, String reason) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     try {
       await _repository.rejectOrganization(organizationId, adminId, reason);
       state = state.copyWith(isLoading: false);
@@ -157,11 +163,12 @@ class AdminNotifier extends StateNotifier<AdminState> {
       return false;
     }
   }
-  
+
   // Blacklist a user
-  Future<bool> blacklistUser(String userId, String reason, String adminId) async {
+  Future<bool> blacklistUser(
+      String userId, String reason, String adminId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     try {
       await _repository.blacklistUser(userId, reason, adminId);
       state = state.copyWith(isLoading: false);
@@ -174,11 +181,12 @@ class AdminNotifier extends StateNotifier<AdminState> {
       return false;
     }
   }
-  
+
   // Handle user report
-  Future<bool> handleReport(String reportId, String status, String adminId, String? notes) async {
+  Future<bool> handleReport(
+      String reportId, String status, String adminId, String? notes) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     try {
       await _repository.updateReportStatus(reportId, status, adminId, notes);
       state = state.copyWith(isLoading: false);
@@ -193,7 +201,8 @@ class AdminNotifier extends StateNotifier<AdminState> {
   }
 }
 
-final adminNotifierProvider = StateNotifierProvider<AdminNotifier, AdminState>((ref) {
+final adminNotifierProvider =
+    StateNotifierProvider<AdminNotifier, AdminState>((ref) {
   final repository = ref.watch(adminRepositoryProvider);
   return AdminNotifier(repository);
 });

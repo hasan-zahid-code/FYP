@@ -19,30 +19,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       await ref.read(authStateProvider.notifier).login(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+            _emailController.text.trim(),
+            _passwordController.text,
+          );
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
     final errorMessage = authState.errorMessage;
-    
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(
@@ -56,34 +56,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Logo and title
-                    Icon(
+                    const Icon(
                       Icons.volunteer_activism,
                       size: 70,
                       color: AppThemes.primaryColor,
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     Text(
                       'Welcome Back',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                       textAlign: TextAlign.center,
                     ),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     Text(
                       'Sign in to continue your donation journey',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
-                      ),
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.color
+                                ?.withOpacity(0.7),
+                          ),
                       textAlign: TextAlign.center,
                     ),
-                    
+
                     const SizedBox(height: 40),
-                    
+
                     // Error message (if any)
                     if (errorMessage != null) ...[
                       Container(
@@ -94,7 +99,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.error_outline,
                               color: AppThemes.errorColor,
                               size: 20,
@@ -103,7 +108,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             Expanded(
                               child: Text(
                                 errorMessage,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppThemes.errorColor,
                                   fontSize: 14,
                                 ),
@@ -114,7 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       const SizedBox(height: 24),
                     ],
-                    
+
                     // Email field
                     TextInput(
                       controller: _emailController,
@@ -124,9 +129,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       validator: Validators.validateEmail,
                       textInputAction: TextInputAction.next,
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Password field
                     TextInput(
                       controller: _passwordController,
@@ -137,13 +142,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _login(),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        icon: Icon(_obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined),
+                        onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     // Forgot password
                     Align(
                       alignment: Alignment.centerRight,
@@ -151,7 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         onPressed: () {
                           // Navigate to forgot password screen
                         },
-                        child: Text(
+                        child: const Text(
                           'Forgot Password?',
                           style: TextStyle(
                             color: AppThemes.secondaryColor,
@@ -160,18 +168,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Login button
                     PrimaryButton(
                       onPressed: _login,
                       label: 'Sign In',
                       isLoading: authState.isLoading,
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Register link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -179,12 +187,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Text(
                           'Don\'t have an account?',
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.color
+                                ?.withOpacity(0.7),
                           ),
                         ),
                         TextButton(
                           onPressed: () => context.go('/register'),
-                          child: Text(
+                          child: const Text(
                             'Register',
                             style: TextStyle(
                               color: AppThemes.primaryColor,

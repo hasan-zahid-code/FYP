@@ -159,7 +159,7 @@ class DonationTimelineChart extends StatelessWidget {
               color: AppThemes.primaryColor,
               barWidth: 3,
               isStrokeCapRound: true,
-              dotData: FlDotData(show: false),
+              dotData: const FlDotData(show: false),
               belowBarData: BarAreaData(
                 show: true,
                 color: AppThemes.primaryColor.withOpacity(0.1),
@@ -172,7 +172,7 @@ class DonationTimelineChart extends StatelessWidget {
               color: AppThemes.secondaryColor,
               barWidth: 3,
               isStrokeCapRound: true,
-              dotData: FlDotData(show: false),
+              dotData: const FlDotData(show: false),
               belowBarData: BarAreaData(
                 show: true,
                 color: AppThemes.secondaryColor.withOpacity(0.1),

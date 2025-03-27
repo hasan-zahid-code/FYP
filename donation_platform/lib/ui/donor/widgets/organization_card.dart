@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 class OrganizationCard extends StatelessWidget {
   final Organization organization;
   final VoidCallback? onTap;
-  
+
   const OrganizationCard({
     super.key,
     required this.organization,
@@ -46,19 +46,20 @@ class OrganizationCard extends StatelessWidget {
                   children: [
                     // Banner image
                     organization.bannerUrl != null
-                      ? CachedNetworkImage(
-                          imageUrl: organization.bannerUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: AppThemes.primaryColor.withOpacity(0.1),
-                            child: const Center(
-                              child: CircularProgressIndicator(),
+                        ? CachedNetworkImage(
+                            imageUrl: organization.bannerUrl!,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color: AppThemes.primaryColor.withOpacity(0.1),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
                             ),
-                          ),
-                          errorWidget: (context, url, error) => _buildDefaultBanner(),
-                        )
-                      : _buildDefaultBanner(),
-                      
+                            errorWidget: (context, url, error) =>
+                                _buildDefaultBanner(),
+                          )
+                        : _buildDefaultBanner(),
+
                     // Gradient overlay for text visibility
                     Container(
                       decoration: BoxDecoration(
@@ -73,7 +74,7 @@ class OrganizationCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    
+
                     // Distance indicator
                     if (organization.distanceKm != null)
                       Positioned(
@@ -109,7 +110,7 @@ class OrganizationCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                    
+
                     // Logo
                     Positioned(
                       bottom: 12,
@@ -145,7 +146,7 @@ class OrganizationCard extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // Organization details
             Padding(
               padding: const EdgeInsets.all(12),
@@ -174,9 +175,9 @@ class OrganizationCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Address
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,11 +201,12 @@ class OrganizationCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // Description
-                  if (organization.description != null && organization.description!.isNotEmpty)
+                  if (organization.description != null &&
+                      organization.description!.isNotEmpty)
                     Text(
                       organization.description!,
                       style: TextStyle(
@@ -214,9 +216,9 @@ class OrganizationCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    
+
                   const SizedBox(height: 12),
-                  
+
                   // Action buttons
                   Row(
                     children: [
@@ -258,7 +260,7 @@ class OrganizationCard extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildLogo() {
     return Container(
       height: 36,
@@ -277,16 +279,31 @@ class OrganizationCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: organization.logoUrl != null
-          ? CachedNetworkImage(
-              imageUrl: organization.logoUrl!,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: AppThemes.primaryColor,
+            ? CachedNetworkImage(
+                imageUrl: organization.logoUrl!,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppThemes.primaryColor,
+                  ),
                 ),
-              ),
-              errorWidget: (context, url, error) => Container(
+                errorWidget: (context, url, error) => Container(
+                  color: AppThemes.primaryColor,
+                  child: Center(
+                    child: Text(
+                      organization.organizationName
+                          .substring(0, 1)
+                          .toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : Container(
                 color: AppThemes.primaryColor,
                 child: Center(
                   child: Text(
@@ -298,23 +315,10 @@ class OrganizationCard extends StatelessWidget {
                   ),
                 ),
               ),
-            )
-          : Container(
-              color: AppThemes.primaryColor,
-              child: Center(
-                child: Text(
-                  organization.organizationName.substring(0, 1).toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
       ),
     );
   }
-  
+
   Widget _buildDefaultBanner() {
     return Container(
       color: AppThemes.primaryColor.withOpacity(0.1),

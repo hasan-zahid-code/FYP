@@ -24,7 +24,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   String _selectedUserType = 'donor'; // Default to donor
-  
+
   @override
   void dispose() {
     _fullNameController.dispose();
@@ -34,7 +34,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _confirmPasswordController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _register() async {
     if (_formKey.currentState?.validate() ?? false) {
       // Check if passwords match
@@ -44,24 +44,24 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         );
         return;
       }
-      
+
       await ref.read(authStateProvider.notifier).register(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        fullName: _fullNameController.text.trim(),
-        phone: _phoneController.text.trim(),
-        userType: _selectedUserType,
-      );
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+            fullName: _fullNameController.text.trim(),
+            phone: _phoneController.text.trim(),
+            userType: _selectedUserType,
+          );
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
     final errorMessage = authState.errorMessage;
-    
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -83,34 +83,39 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Logo and title
-                    Icon(
+                    const Icon(
                       Icons.volunteer_activism,
                       size: 70,
                       color: AppThemes.primaryColor,
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     Text(
                       'Create an Account',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                       textAlign: TextAlign.center,
                     ),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     Text(
                       'Join our donation platform and start making a difference',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
-                      ),
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.color
+                                ?.withOpacity(0.7),
+                          ),
                       textAlign: TextAlign.center,
                     ),
-                    
+
                     const SizedBox(height: 32),
-                    
+
                     // Error message (if any)
                     if (errorMessage != null) ...[
                       Container(
@@ -121,7 +126,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.error_outline,
                               color: AppThemes.errorColor,
                               size: 20,
@@ -130,7 +135,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             Expanded(
                               child: Text(
                                 errorMessage,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppThemes.errorColor,
                                   fontSize: 14,
                                 ),
@@ -141,7 +146,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                       const SizedBox(height: 24),
                     ],
-                    
+
                     // Full name field
                     TextInput(
                       controller: _fullNameController,
@@ -150,9 +155,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       validator: Validators.validateName,
                       textInputAction: TextInputAction.next,
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Email field
                     TextInput(
                       controller: _emailController,
@@ -162,9 +167,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       validator: Validators.validateEmail,
                       textInputAction: TextInputAction.next,
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Phone field
                     TextInput(
                       controller: _phoneController,
@@ -174,9 +179,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       validator: Validators.validatePhone,
                       textInputAction: TextInputAction.next,
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // User type selection
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,9 +222,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Password field
                     TextInput(
                       controller: _passwordController,
@@ -229,13 +234,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       validator: Validators.validatePassword,
                       textInputAction: TextInputAction.next,
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        icon: Icon(_obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined),
+                        onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Confirm password field
                     TextInput(
                       controller: _confirmPasswordController,
@@ -254,22 +262,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _register(),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscureConfirmPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                        icon: Icon(_obscureConfirmPassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined),
+                        onPressed: () => setState(() =>
+                            _obscureConfirmPassword = !_obscureConfirmPassword),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Register button
                     PrimaryButton(
                       onPressed: _register,
                       label: 'Register',
                       isLoading: authState.isLoading,
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Login link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -277,12 +288,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         Text(
                           'Already have an account?',
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.color
+                                ?.withOpacity(0.7),
                           ),
                         ),
                         TextButton(
                           onPressed: () => context.go('/login'),
-                          child: Text(
+                          child: const Text(
                             'Login',
                             style: TextStyle(
                               color: AppThemes.primaryColor,

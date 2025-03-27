@@ -273,7 +273,7 @@ class _CompletedDonationsScreenState
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppThemes.primaryColor,
               fontSize: 12,
               fontWeight: FontWeight.w500,
@@ -285,7 +285,7 @@ class _CompletedDonationsScreenState
             borderRadius: BorderRadius.circular(12),
             child: Container(
               padding: const EdgeInsets.all(2),
-              child: Icon(
+              child: const Icon(
                 Icons.close,
                 size: 14,
                 color: AppThemes.primaryColor,
@@ -306,7 +306,7 @@ class _CompletedDonationsScreenState
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: const ColorScheme.light(
               primary: AppThemes.primaryColor,
               onPrimary: Colors.white,
               surface: Colors.white,
@@ -381,14 +381,14 @@ class _CompletedDonationsScreenState
                       color: AppThemes.successColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Row(
+                    child: const Row(
                       children: [
                         Icon(
                           Icons.check_circle,
                           size: 14,
                           color: AppThemes.successColor,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         Text(
                           'Completed',
                           style: TextStyle(
@@ -532,7 +532,7 @@ class _CompletedDonationsScreenState
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.calendar_today,
                             size: 18,
                             color: AppThemes.primaryColor,

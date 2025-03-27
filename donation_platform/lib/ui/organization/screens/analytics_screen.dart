@@ -34,7 +34,7 @@ class AnalyticsScreen extends StatelessWidget {
                 color: AppThemes.primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.analytics_outlined,
                 size: 64,
                 color: AppThemes.primaryColor,
@@ -104,7 +104,7 @@ class AnalyticsScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.check_circle_outline,
             color: AppThemes.primaryColor,
             size: 20,

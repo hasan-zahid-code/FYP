@@ -10,7 +10,7 @@ class PlatformStatsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final platformStatsAsync = ref.watch(platformStatsProvider);
-    
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -23,7 +23,7 @@ class PlatformStatsCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.insights,
                   color: AppThemes.primaryColor,
                   size: 22,
@@ -32,8 +32,8 @@ class PlatformStatsCard extends ConsumerWidget {
                 Text(
                   'Platform Statistics',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -128,7 +128,7 @@ class PlatformStatsCard extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildStatItem(
     BuildContext context, {
     required IconData icon,
@@ -161,14 +161,18 @@ class PlatformStatsCard extends ConsumerWidget {
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                  ),
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.color
+                            ?.withOpacity(0.7),
+                      ),
                 ),
                 Text(
                   value,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),

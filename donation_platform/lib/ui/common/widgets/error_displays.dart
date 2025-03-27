@@ -9,7 +9,7 @@ class ErrorDisplay extends StatelessWidget {
   final VoidCallback? onRetry;
   final String? retryLabel;
   final IconData? icon;
-  
+
   const ErrorDisplay({
     super.key,
     required this.message,
@@ -57,7 +57,7 @@ class EmptyStateDisplay extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
   final IconData icon;
-  
+
   const EmptyStateDisplay({
     super.key,
     required this.message,
@@ -83,8 +83,12 @@ class EmptyStateDisplay extends StatelessWidget {
             Text(
               message,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
-              ),
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.color
+                        ?.withOpacity(0.7),
+                  ),
               textAlign: TextAlign.center,
             ),
             if (actionLabel != null && onAction != null) ...[
@@ -104,7 +108,7 @@ class EmptyStateDisplay extends StatelessWidget {
 /// A widget to display network connection errors
 class NetworkErrorDisplay extends StatelessWidget {
   final VoidCallback onRetry;
-  
+
   const NetworkErrorDisplay({
     super.key,
     required this.onRetry,
@@ -113,7 +117,8 @@ class NetworkErrorDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ErrorDisplay(
-      message: 'No internet connection. Please check your network settings and try again.',
+      message:
+          'No internet connection. Please check your network settings and try again.',
       icon: Icons.wifi_off,
       onRetry: onRetry,
       retryLabel: 'Refresh',
@@ -126,7 +131,7 @@ class PermissionDeniedDisplay extends StatelessWidget {
   final String message;
   final VoidCallback? onAction;
   final String? actionLabel;
-  
+
   const PermissionDeniedDisplay({
     super.key,
     this.message = 'You don\'t have permission to access this feature.',
@@ -150,10 +155,11 @@ class UnderConstructionDisplay extends StatelessWidget {
   final String message;
   final VoidCallback? onAction;
   final String? actionLabel;
-  
+
   const UnderConstructionDisplay({
     super.key,
-    this.message = 'This feature is under construction and will be available soon.',
+    this.message =
+        'This feature is under construction and will be available soon.',
     this.onAction,
     this.actionLabel,
   });
@@ -166,7 +172,7 @@ class UnderConstructionDisplay extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.construction,
               size: 64,
               color: AppThemes.warningColor,

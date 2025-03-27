@@ -11,7 +11,7 @@ class UserReportsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pendingReportsAsync = ref.watch(pendingReportsProvider);
-    
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -27,7 +27,7 @@ class UserReportsCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.report_outlined,
                       color: AppThemes.errorColor,
                       size: 22,
@@ -36,8 +36,8 @@ class UserReportsCard extends ConsumerWidget {
                     Text(
                       'User Reports',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),
@@ -72,7 +72,7 @@ class UserReportsCard extends ConsumerWidget {
                     ),
                   );
                 }
-                
+
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -85,7 +85,8 @@ class UserReportsCard extends ConsumerWidget {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: _getReportTypeColor(report.reportType).withOpacity(0.1),
+                          color: _getReportTypeColor(report.reportType)
+                              .withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
@@ -100,7 +101,7 @@ class UserReportsCard extends ConsumerWidget {
                       ),
                       subtitle: Text(
                         'Reported ${_formatDate(report.createdAt)}',
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
                       trailing: ElevatedButton(
                         onPressed: () {
@@ -109,7 +110,8 @@ class UserReportsCard extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppThemes.errorColor,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           textStyle: const TextStyle(fontSize: 12),
                         ),
                         child: const Text('Review'),
@@ -127,11 +129,11 @@ class UserReportsCard extends ConsumerWidget {
       ),
     );
   }
-  
+
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays < 1) {
       return 'Today';
     } else if (difference.inDays == 1) {
@@ -140,7 +142,7 @@ class UserReportsCard extends ConsumerWidget {
       return '${date.day}/${date.month}/${date.year}';
     }
   }
-  
+
   String _getReportTypeLabel(String reportType) {
     switch (reportType) {
       case 'spam':
@@ -155,7 +157,7 @@ class UserReportsCard extends ConsumerWidget {
         return 'Report';
     }
   }
-  
+
   IconData _getReportTypeIcon(String reportType) {
     switch (reportType) {
       case 'spam':
@@ -170,7 +172,7 @@ class UserReportsCard extends ConsumerWidget {
         return Icons.report_problem;
     }
   }
-  
+
   Color _getReportTypeColor(String reportType) {
     switch (reportType) {
       case 'spam':

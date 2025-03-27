@@ -171,7 +171,7 @@ class User {
   final String userType; // "donor", "organization", "admin"
   final DateTime createdAt;
   final DateTime updatedAt;
-  
+
   // User verification details
   final UserVerification verification;
 
@@ -195,7 +195,7 @@ class UserVerification {
   final bool cnicVerified;
   final bool phoneVerified;
   final DateTime verifiedAt;
-  
+
   UserVerification({
     required this.userId,
     required this.cnic,
@@ -218,10 +218,10 @@ class Organization {
   final String status; // "pending", "approved", "rejected"
   final DateTime createdAt;
   final DateTime updatedAt;
-  
+
   // Organization verification details
   final OrganizationVerification verification;
-  
+
   Organization({
     required this.id,
     required this.name,
@@ -256,7 +256,7 @@ class OrganizationVerification {
   final String verificationNotes;
   final String verifiedBy; // Admin ID
   final DateTime verifiedAt;
-  
+
   OrganizationVerification({
     required this.organizationId,
     required this.registrationNumber,
@@ -291,10 +291,10 @@ class Donation {
   final bool isAnonymous;
   final DateTime createdAt;
   final DateTime updatedAt;
-  
+
   // Feedback and tracking
   final DonationTracking tracking;
-  
+
   Donation({
     required this.id,
     required this.donorId,
@@ -318,7 +318,7 @@ class DonationTracking {
   final String status; // "received", "processing", "utilized", "completed"
   final String feedback;
   final List<DonationUpdate> updates;
-  
+
   DonationTracking({
     required this.donationId,
     required this.status,
@@ -335,7 +335,7 @@ class DonationUpdate {
   final String description;
   final List<String> mediaUrls; // Images or videos showing impact
   final DateTime createdAt;
-  
+
   DonationUpdate({
     required this.id,
     required this.donationId,
@@ -350,11 +350,8 @@ class DonationUpdate {
 class GeoPoint {
   final double latitude;
   final double longitude;
-  
-  GeoPoint({
-    required this.latitude,
-    required this.longitude,
-  });
+
+  GeoPoint({required this.latitude, required this.longitude});
 }
 
 // =======================================================
@@ -373,13 +370,17 @@ abstract class VerificationService {
   // Phone verification with OTP
   Future<bool> sendPhoneVerificationOTP(String phone);
   Future<bool> verifyPhoneOTP(String phone, String otp);
-  
+
   // CNIC (National ID) verification
   Future<bool> verifyCNIC(String cnic, String name, String dateOfBirth);
-  
+
   // Organization verification
-  Future<bool> submitOrganizationVerification(OrganizationVerification verification);
-  Future<OrganizationVerification> getOrganizationVerificationStatus(String organizationId);
+  Future<bool> submitOrganizationVerification(
+    OrganizationVerification verification,
+  );
+  Future<OrganizationVerification> getOrganizationVerificationStatus(
+    String organizationId,
+  );
 }
 
 // =======================================================
@@ -482,7 +483,7 @@ class CNICVerificationService {
     if (!isValidCNICFormat(cnic)) {
       return false;
     }
-    
+
     // 2. Call to NADRA API or similar national ID verification service
     // This is a placeholder for the actual API integration
     try {
@@ -491,14 +492,14 @@ class CNICVerificationService {
         'name': name,
         'dob': dateOfBirth,
       });
-      
+
       return response['verified'] == true;
     } catch (e) {
       logError('CNIC verification failed', e);
       return false;
     }
   }
-  
+
   bool isValidCNICFormat(String cnic) {
     // Pakistani CNIC format: 12345-1234567-1
     final RegExp cnicRegex = RegExp(r'^\d{5}-\d{7}-\d{1}$');
@@ -513,48 +514,44 @@ class PhoneOTPService {
     try {
       // Generate a random 6-digit OTP
       final String otp = generateRandomOTP();
-      
+
       // Store the OTP with expiration time (e.g., 10 minutes)
       await storeOTP(phone, otp, Duration(minutes: 10));
-      
+
       // Send the OTP via SMS gateway
       final bool sent = await sendSMS(phone, 'Your verification code is: $otp');
-      
+
       return sent;
     } catch (e) {
       logError('Failed to send OTP', e);
       return false;
     }
   }
-  
+
   // Verify submitted OTP
   Future<bool> verifyOTP(String phone, String submittedOTP) async {
     try {
       // Retrieve stored OTP and check if it's valid and not expired
       final StoredOTP storedOTP = await getStoredOTP(phone);
-      
-      if (storedOTP == null) {
-        return false; // No OTP found
-      }
-      
+
       if (DateTime.now().isAfter(storedOTP.expiresAt)) {
         return false; // OTP expired
       }
-      
+
       return storedOTP.otp == submittedOTP;
     } catch (e) {
       logError('OTP verification failed', e);
       return false;
     }
   }
-  
+
   // Helper methods
   String generateRandomOTP() {
     // Generate a random 6-digit number
     final random = Random();
     return (100000 + random.nextInt(900000)).toString();
   }
-  
+
   Future<void> storeOTP(String phone, String otp, Duration expiration) async {
     final expiresAt = DateTime.now().add(expiration);
     // Store in secure storage or database
@@ -566,18 +563,17 @@ class PhoneOTPService {
       }),
     );
   }
-  
+
   Future<StoredOTP> getStoredOTP(String phone) async {
     final String storedData = await secureStorage.read(key: 'otp_$phone');
-    if (storedData == null) return null;
-    
+
     final data = json.decode(storedData);
     return StoredOTP(
       otp: data['otp'],
       expiresAt: DateTime.parse(data['expiresAt']),
     );
   }
-  
+
   Future<bool> sendSMS(String phone, String message) async {
     // Integration with SMS gateway provider
     // This is a placeholder for the actual SMS gateway integration
@@ -586,7 +582,7 @@ class PhoneOTPService {
         'to': phone,
         'message': message,
       });
-      
+
       return response['sent'] == true;
     } catch (e) {
       logError('SMS sending failed', e);
@@ -598,11 +594,8 @@ class PhoneOTPService {
 class StoredOTP {
   final String otp;
   final DateTime expiresAt;
-  
-  StoredOTP({
-    required this.otp,
-    required this.expiresAt,
-  });
+
+  StoredOTP({required this.otp, required this.expiresAt});
 }
 
 // =======================================================
@@ -621,40 +614,43 @@ class OrganizationVerificationProcess {
   // Submit verification request with all required documents
   Future<bool> submitVerificationRequest(
     String organizationId,
-    OrganizationVerificationRequest request
+    OrganizationVerificationRequest request,
   ) async {
     try {
       // Upload all documents to secure storage
-      final Map<String, String> documentUrls = await uploadVerificationDocuments(
-        organizationId,
-        request.documents,
-      );
-      
+      final Map<String, String> documentUrls =
+          await uploadVerificationDocuments(organizationId, request.documents);
+
       // Submit verification data to backend
-      final response = await apiService.post('/organizations/verification/submit', {
-        'organizationId': organizationId,
-        'registrationNumber': request.registrationNumber,
-        'taxId': request.taxId,
-        'documentUrls': documentUrls,
-        'contactPerson': request.contactPerson,
-        'boardMembers': request.boardMembers,
-        'website': request.website,
-        'socialMediaProfiles': request.socialMediaProfiles,
-        'bankDetails': request.bankDetails,
-      });
-      
+      final response = await apiService
+          .post('/organizations/verification/submit', {
+            'organizationId': organizationId,
+            'registrationNumber': request.registrationNumber,
+            'taxId': request.taxId,
+            'documentUrls': documentUrls,
+            'contactPerson': request.contactPerson,
+            'boardMembers': request.boardMembers,
+            'website': request.website,
+            'socialMediaProfiles': request.socialMediaProfiles,
+            'bankDetails': request.bankDetails,
+          });
+
       return response['submitted'] == true;
     } catch (e) {
       logError('Verification submission failed', e);
       return false;
     }
   }
-  
+
   // Check verification status
-  Future<VerificationStatus> checkVerificationStatus(String organizationId) async {
+  Future<VerificationStatus> checkVerificationStatus(
+    String organizationId,
+  ) async {
     try {
-      final response = await apiService.get('/organizations/verification/status/$organizationId');
-      
+      final response = await apiService.get(
+        '/organizations/verification/status/$organizationId',
+      );
+
       return VerificationStatus(
         status: response['status'],
         stage: response['stage'],
@@ -677,7 +673,7 @@ class OrganizationVerificationRequest {
   final String website;
   final Map<String, String> socialMediaProfiles;
   final BankDetails bankDetails;
-  
+
   OrganizationVerificationRequest({
     required this.registrationNumber,
     required this.taxId,
@@ -696,7 +692,7 @@ class ContactPerson {
   final String email;
   final String phone;
   final String cnic;
-  
+
   ContactPerson({
     required this.name,
     required this.position,
@@ -710,12 +706,8 @@ class BoardMember {
   final String name;
   final String position;
   final String cnic;
-  
-  BoardMember({
-    required this.name,
-    required this.position,
-    required this.cnic,
-  });
+
+  BoardMember({required this.name, required this.position, required this.cnic});
 }
 
 class BankDetails {
@@ -724,7 +716,7 @@ class BankDetails {
   final String bankName;
   final String branchCode;
   final String swiftCode;
-  
+
   BankDetails({
     required this.accountTitle,
     required this.accountNumber,
@@ -739,7 +731,7 @@ class VerificationStatus {
   final String stage; // Current verification stage
   final String notes; // Any notes from the admin
   final DateTime updatedAt;
-  
+
   VerificationStatus({
     required this.status,
     required this.stage,
@@ -760,13 +752,13 @@ class DonorHomeScreen extends StatefulWidget {
 
 class _DonorHomeScreenState extends State<DonorHomeScreen> {
   final DonorBloc _donorBloc = DonorBloc();
-  
+
   @override
   void initState() {
     super.initState();
     _donorBloc.loadDashboardData();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -788,11 +780,11 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final state = snapshot.data!;
-            
+
             if (state.isLoading) {
               return Center(child: CircularProgressIndicator());
             }
-            
+
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -805,9 +797,9 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                       organizationsSupported: state.organizationsSupported,
                       totalImpact: state.totalImpact,
                     ),
-                    
+
                     SizedBox(height: 24),
-                    
+
                     // Recent donations
                     Text(
                       'Recent Donations',
@@ -822,16 +814,17 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                         final donation = state.recentDonations[index];
                         return DonationListItem(
                           donation: donation,
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            '/donations/${donation.id}',
-                          ),
+                          onTap:
+                              () => Navigator.pushNamed(
+                                context,
+                                '/donations/${donation.id}',
+                              ),
                         );
                       },
                     ),
-                    
+
                     SizedBox(height: 24),
-                    
+
                     // Nearby organizations
                     Text(
                       'Organizations Near You',
@@ -847,21 +840,23 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                           final organization = state.nearbyOrganizations[index];
                           return OrganizationCard(
                             organization: organization,
-                            onTap: () => Navigator.pushNamed(
-                              context,
-                              '/organizations/${organization.id}',
-                            ),
+                            onTap:
+                                () => Navigator.pushNamed(
+                                  context,
+                                  '/organizations/${organization.id}',
+                                ),
                           );
                         },
                       ),
                     ),
-                    
+
                     SizedBox(height: 24),
-                    
+
                     // Discover more organizations
                     ElevatedButton(
                       child: Text('Discover More Organizations'),
-                      onPressed: () => Navigator.pushNamed(context, '/discover'),
+                      onPressed:
+                          () => Navigator.pushNamed(context, '/discover'),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(double.infinity, 50),
                       ),
@@ -871,21 +866,15 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               ),
             );
           }
-          
+
           return Center(child: CircularProgressIndicator());
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0, // Home
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Discover',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Discover'),
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
             label: 'Donations',
@@ -914,25 +903,25 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize services
   await initializeServices();
-  
+
   runApp(DonationApp());
 }
 
 Future<void> initializeServices() async {
   // Initialize Firebase or other backend services
   await Firebase.initializeApp();
-  
+
   // Initialize location services
   final locationService = LocationService();
   await locationService.initialize();
-  
+
   // Initialize secure storage
   final secureStorage = SecureStorageService();
   await secureStorage.initialize();
-  
+
   // Register all services in the service locator
   ServiceLocator.registerServices();
 }
@@ -961,10 +950,10 @@ class AppRouter {
     // Parse route and parameters
     final uri = Uri.parse(settings.name!);
     final pathSegments = uri.pathSegments;
-    
+
     // Get the current user type (if logged in)
     final userType = AuthService.getCurrentUserType();
-    
+
     // Route to the appropriate screen based on user type and requested route
     switch (userType) {
       case 'donor':
@@ -977,9 +966,12 @@ class AppRouter {
         return _generateAuthRoutes(pathSegments, settings);
     }
   }
-  
+
   // Handle donor-specific routes
-  static Route<dynamic> _generateDonorRoutes(List<String> pathSegments, RouteSettings settings) {
+  static Route<dynamic> _generateDonorRoutes(
+    List<String> pathSegments,
+    RouteSettings settings,
+  ) {
     // Implement donor routing logic
     switch (pathSegments.first) {
       case '':
@@ -991,9 +983,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => NotFoundScreen());
     }
   }
-  
+
   // Handle organization-specific routes
-  static Route<dynamic> _generateOrganizationRoutes(List<String> pathSegments, RouteSettings settings) {
+  static Route<dynamic> _generateOrganizationRoutes(
+    List<String> pathSegments,
+    RouteSettings settings,
+  ) {
     // Implement organization routing logic
     switch (pathSegments.first) {
       case '':
@@ -1003,9 +998,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => NotFoundScreen());
     }
   }
-  
+
   // Handle admin-specific routes
-  static Route<dynamic> _generateAdminRoutes(List<String> pathSegments, RouteSettings settings) {
+  static Route<dynamic> _generateAdminRoutes(
+    List<String> pathSegments,
+    RouteSettings settings,
+  ) {
     // Implement admin routing logic
     switch (pathSegments.first) {
       case '':
@@ -1015,9 +1013,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => NotFoundScreen());
     }
   }
-  
+
   // Handle authentication routes
-  static Route<dynamic> _generateAuthRoutes(List<String> pathSegments, RouteSettings settings) {
+  static Route<dynamic> _generateAuthRoutes(
+    List<String> pathSegments,
+    RouteSettings settings,
+  ) {
     // Implement authentication routing logic
     switch (pathSegments.first) {
       case '':

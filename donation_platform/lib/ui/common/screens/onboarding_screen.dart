@@ -17,34 +17,37 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final int _numPages = 3;
-  
+
   final List<_OnboardingPage> _pages = [
     const _OnboardingPage(
       title: 'Welcome to Donation Platform',
-      description: 'Connecting donors with organizations to make a positive impact on the world.',
+      description:
+          'Connecting donors with organizations to make a positive impact on the world.',
       image: 'assets/images/onboarding_1.png',
       fallbackIcon: Icons.volunteer_activism,
     ),
     const _OnboardingPage(
       title: 'Donate Anything',
-      description: 'Donate money, food, clothes, or other items to those in need, all in one platform.',
+      description:
+          'Donate money, food, clothes, or other items to those in need, all in one platform.',
       image: 'assets/images/onboarding_2.png',
       fallbackIcon: Icons.redeem,
     ),
     const _OnboardingPage(
       title: 'Track Your Impact',
-      description: 'See how your donations are making a difference in people\'s lives.',
+      description:
+          'See how your donations are making a difference in people\'s lives.',
       image: 'assets/images/onboarding_3.png',
       fallbackIcon: Icons.track_changes,
     ),
   ];
-  
+
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
-  
+
   void _nextPage() {
     if (_currentPage < _numPages - 1) {
       _pageController.nextPage(
@@ -55,7 +58,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _completeOnboarding();
     }
   }
-  
+
   void _previousPage() {
     if (_currentPage > 0) {
       _pageController.previousPage(
@@ -64,17 +67,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       );
     }
   }
-  
+
   Future<void> _completeOnboarding() async {
     await ref.read(authStateProvider.notifier).completeOnboarding();
     if (!mounted) return;
     context.go('/login');
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -89,7 +92,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
               ),
             ),
-            
+
             // Page content
             Expanded(
               child: PageView.builder(
@@ -105,7 +108,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 },
               ),
             ),
-            
+
             // Page indicator
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -119,16 +122,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     height: 8,
                     width: _currentPage == index ? 24 : 8,
                     decoration: BoxDecoration(
-                      color: _currentPage == index 
-                        ? AppThemes.primaryColor 
-                        : Colors.grey.shade300,
+                      color: _currentPage == index
+                          ? AppThemes.primaryColor
+                          : Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                 ),
               ),
             ),
-            
+
             // Navigation buttons
             Padding(
               padding: const EdgeInsets.all(24.0),
@@ -137,17 +140,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   // Back button (only show if not on first page)
                   _currentPage > 0
-                    ? SecondaryButton(
-                        onPressed: _previousPage,
-                        label: 'Back',
-                        width: 100,
-                      )
-                    : const SizedBox(width: 100),
-                  
+                      ? SecondaryButton(
+                          onPressed: _previousPage,
+                          label: 'Back',
+                          width: 100,
+                        )
+                      : const SizedBox(width: 100),
+
                   // Next/Get Started button
                   PrimaryButton(
                     onPressed: _nextPage,
-                    label: _currentPage == _numPages - 1 ? 'Get Started' : 'Next',
+                    label:
+                        _currentPage == _numPages - 1 ? 'Get Started' : 'Next',
                     width: 160,
                   ),
                 ],
@@ -165,7 +169,7 @@ class _OnboardingPage extends StatelessWidget {
   final String description;
   final String image;
   final IconData fallbackIcon;
-  
+
   const _OnboardingPage({
     required this.title,
     required this.description,
@@ -195,30 +199,34 @@ class _OnboardingPage extends StatelessWidget {
               },
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Title
           Text(
             title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.headlineSmall?.color,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.headlineSmall?.color,
+                ),
             textAlign: TextAlign.center,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Description
           Text(
             description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
-            ),
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.color
+                      ?.withOpacity(0.7),
+                ),
             textAlign: TextAlign.center,
           ),
-          
+
           const Spacer(),
         ],
       ),

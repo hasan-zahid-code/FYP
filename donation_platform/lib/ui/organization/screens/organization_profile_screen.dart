@@ -370,7 +370,7 @@ class _OrganizationProfileScreenState
                           label: Text(category.name),
                           backgroundColor:
                               AppThemes.primaryColor.withOpacity(0.1),
-                          labelStyle: TextStyle(
+                          labelStyle: const TextStyle(
                             color: AppThemes.primaryColor,
                             fontSize: 12,
                           ),
@@ -456,9 +456,10 @@ class _OrganizationProfileScreenState
                               placeholder: (context, url) => const Center(
                                 child: CircularProgressIndicator(),
                               ),
-                              errorWidget: (context, url, error) => Column(
+                              errorWidget: (context, url, error) =>
+                                  const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Icon(
                                     Icons.image,
                                     size: 50,
@@ -470,9 +471,9 @@ class _OrganizationProfileScreenState
                               ),
                             ),
                           )
-                        : Column(
+                        : const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(
                                 Icons.image,
                                 size: 50,
@@ -522,9 +523,10 @@ class _OrganizationProfileScreenState
                                 placeholder: (context, url) => const Center(
                                   child: CircularProgressIndicator(),
                                 ),
-                                errorWidget: (context, url, error) => Column(
+                                errorWidget: (context, url, error) =>
+                                    const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     Icon(
                                       Icons.image,
                                       size: 24,
@@ -538,9 +540,9 @@ class _OrganizationProfileScreenState
                                   ],
                                 ),
                               )
-                            : Column(
+                            : const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Icon(
                                     Icons.image,
                                     size: 24,

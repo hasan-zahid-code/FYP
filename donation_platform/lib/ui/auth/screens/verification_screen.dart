@@ -20,7 +20,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   final _otpController = TextEditingController();
   int _resendCounter = 60;
   Timer? _timer;
-  
+
   @override
   void initState() {
     super.initState();
@@ -30,20 +30,20 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       _sendOTP();
     });
   }
-  
+
   @override
   void dispose() {
     _timer?.cancel();
     _otpController.dispose();
     super.dispose();
   }
-  
+
   void _startResendTimer() {
     _timer?.cancel();
     setState(() {
       _resendCounter = 60;
     });
-    
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_resendCounter > 0) {
@@ -54,7 +54,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       });
     });
   }
-  
+
   Future<void> _sendOTP() async {
     final user = ref.read(authStateProvider).user;
     if (user == null) {
@@ -63,9 +63,11 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       );
       return;
     }
-    
-    final result = await ref.read(verificationNotifierProvider.notifier).sendPhoneVerificationOTP(user.phone);
-    
+
+    final result = await ref
+        .read(verificationNotifierProvider.notifier)
+        .sendPhoneVerificationOTP(user.phone);
+
     if (result && mounted) {
       _startResendTimer();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -73,7 +75,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       );
     }
   }
-  
+
   Future<void> _verifyOTP() async {
     if (_otpController.text.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -81,7 +83,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       );
       return;
     }
-    
+
     final user = ref.read(authStateProvider).user;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -89,17 +91,18 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       );
       return;
     }
-    
-    final result = await ref.read(verificationNotifierProvider.notifier).verifyPhoneOTP(
-      user.phone,
-      _otpController.text,
-    );
-    
+
+    final result =
+        await ref.read(verificationNotifierProvider.notifier).verifyPhoneOTP(
+              user.phone,
+              _otpController.text,
+            );
+
     if (result && mounted) {
       // Mark user as verified and navigate based on user type
       await ref.read(authStateProvider.notifier).checkCurrentUser();
       final user = ref.read(authStateProvider).user;
-      
+
       if (user != null) {
         if (context.mounted) {
           switch (user.userType) {
@@ -119,20 +122,20 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final verificationState = ref.watch(verificationNotifierProvider);
     final user = ref.watch(authStateProvider).user;
     final errorMessage = verificationState.errorMessage;
-    
+
     // Format phone number for display (show last 4 digits)
-    final String phoneDisplay = user != null 
+    final String phoneDisplay = user != null
         ? '${user.phone.substring(0, user.phone.length - 4).replaceAll(RegExp(r'.'), '*')}${user.phone.substring(user.phone.length - 4)}'
         : 'your phone';
-    
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -152,36 +155,40 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Icon
-                  Icon(
+                  const Icon(
                     Icons.verified_user_outlined,
                     size: 70,
                     color: AppThemes.primaryColor,
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Title
                   Text(
                     'Phone Verification',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                     textAlign: TextAlign.center,
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Description
                   Text(
                     'We have sent a verification code to $phoneDisplay',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
-                    ),
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.color
+                              ?.withOpacity(0.7),
+                        ),
                     textAlign: TextAlign.center,
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Error message (if any)
                   if (errorMessage != null) ...[
                     Container(
@@ -192,7 +199,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.error_outline,
                             color: AppThemes.errorColor,
                             size: 20,
@@ -201,7 +208,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                           Expanded(
                             child: Text(
                               errorMessage,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: AppThemes.errorColor,
                                 fontSize: 14,
                               ),
@@ -212,7 +219,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                     ),
                     const SizedBox(height: 24),
                   ],
-                  
+
                   // OTP input
                   Center(
                     child: Pinput(
@@ -247,24 +254,25 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: AppThemes.primaryColor, width: 2),
+                          border: Border.all(
+                              color: AppThemes.primaryColor, width: 2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Verify button
                   PrimaryButton(
                     onPressed: _verifyOTP,
                     label: 'Verify',
                     isLoading: verificationState.isLoading,
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Resend OTP button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -272,18 +280,22 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       Text(
                         'Didn\'t receive the code?',
                         style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.color
+                              ?.withOpacity(0.7),
                         ),
                       ),
                       TextButton(
                         onPressed: _resendCounter == 0 ? _sendOTP : null,
                         child: Text(
-                          _resendCounter > 0 
-                              ? 'Resend in $_resendCounter s' 
+                          _resendCounter > 0
+                              ? 'Resend in $_resendCounter s'
                               : 'Resend',
                           style: TextStyle(
-                            color: _resendCounter == 0 
-                                ? AppThemes.primaryColor 
+                            color: _resendCounter == 0
+                                ? AppThemes.primaryColor
                                 : Colors.grey,
                             fontWeight: FontWeight.w600,
                           ),
@@ -291,9 +303,9 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Back to login button
                   SecondaryButton(
                     onPressed: () => context.go('/login'),

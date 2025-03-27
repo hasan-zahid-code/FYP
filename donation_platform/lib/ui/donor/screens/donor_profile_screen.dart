@@ -5,8 +5,6 @@ import 'package:donation_platform/providers/auth_providers.dart';
 import 'package:donation_platform/ui/common/widgets/buttons/primary_button.dart';
 import 'package:donation_platform/ui/common/widgets/buttons/secondary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:donation_platform/data/models/user/user.dart';
-import 'package:donation_platform/data/models/donor/donor_profile.dart';
 import 'package:donation_platform/providers/donor_providers.dart';
 import 'package:donation_platform/ui/common/widgets/loading_indicators.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +17,7 @@ class DonorProfileScreen extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final user = authState.user;
     final donorProfileAsync = ref.watch(donorProfileProvider(user?.id ?? ''));
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -27,8 +25,8 @@ class DonorProfileScreen extends ConsumerWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
+              fontWeight: FontWeight.bold,
+            ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -47,7 +45,8 @@ class DonorProfileScreen extends ConsumerWidget {
               const Text('Failed to load profile'),
               const SizedBox(height: 16),
               SecondaryButton(
-                onPressed: () => ref.refresh(donorProfileProvider(user?.id ?? '')),
+                onPressed: () =>
+                    ref.refresh(donorProfileProvider(user?.id ?? '')),
                 label: 'Retry',
                 icon: Icons.refresh,
               ),
@@ -58,7 +57,7 @@ class DonorProfileScreen extends ConsumerWidget {
           if (user == null) {
             return const Center(child: Text('User not found'));
           }
-          
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -71,58 +70,65 @@ class DonorProfileScreen extends ConsumerWidget {
                       // Profile image
                       CircleAvatar(
                         radius: 50,
-                        backgroundColor: AppThemes.primaryColor.withOpacity(0.1),
+                        backgroundColor:
+                            AppThemes.primaryColor.withOpacity(0.1),
                         child: user.profileImageUrl != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: CachedNetworkImage(
-                                imageUrl: user.profileImageUrl!,
-                                fit: BoxFit.cover,
-                                width: 100,
-                                height: 100,
-                                placeholder: (context, url) => const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) => Text(
-                                  user.fullName.substring(0, 1).toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 36,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppThemes.primaryColor,
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: CachedNetworkImage(
+                                  imageUrl: user.profileImageUrl!,
+                                  fit: BoxFit.cover,
+                                  width: 100,
+                                  height: 100,
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) => Text(
+                                    user.fullName.substring(0, 1).toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppThemes.primaryColor,
+                                    ),
                                   ),
                                 ),
+                              )
+                            : Text(
+                                user.fullName.substring(0, 1).toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppThemes.primaryColor,
+                                ),
                               ),
-                            )
-                          : Text(
-                              user.fullName.substring(0, 1).toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 36,
-                                fontWeight: FontWeight.bold,
-                                color: AppThemes.primaryColor,
-                              ),
-                            ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Name
                       Text(
                         user.fullName,
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
-                      
+
                       const SizedBox(height: 4),
-                      
+
                       // Email
                       Text(
                         user.email,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                        ),
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.color
+                                  ?.withOpacity(0.7),
+                            ),
                       ),
-                      
+
                       const SizedBox(height: 4),
-                      
+
                       // Verification status
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -131,8 +137,8 @@ class DonorProfileScreen extends ConsumerWidget {
                         ),
                         decoration: BoxDecoration(
                           color: user.isVerified
-                            ? AppThemes.successColor.withOpacity(0.1)
-                            : AppThemes.warningColor.withOpacity(0.1),
+                              ? AppThemes.successColor.withOpacity(0.1)
+                              : AppThemes.warningColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -142,26 +148,28 @@ class DonorProfileScreen extends ConsumerWidget {
                               user.isVerified ? Icons.verified : Icons.pending,
                               size: 14,
                               color: user.isVerified
-                                ? AppThemes.successColor
-                                : AppThemes.warningColor,
+                                  ? AppThemes.successColor
+                                  : AppThemes.warningColor,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              user.isVerified ? 'Verified' : 'Verification Pending',
+                              user.isVerified
+                                  ? 'Verified'
+                                  : 'Verification Pending',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: user.isVerified
-                                  ? AppThemes.successColor
-                                  : AppThemes.warningColor,
+                                    ? AppThemes.successColor
+                                    : AppThemes.warningColor,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       // Edit profile button
                       SecondaryButton(
                         onPressed: () {
@@ -174,9 +182,9 @@ class DonorProfileScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Profile sections
                 _buildProfileSection(
                   context,
@@ -194,9 +202,9 @@ class DonorProfileScreen extends ConsumerWidget {
                       _buildInfoRow(context, 'Gender', donorProfile!.gender!),
                   ],
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 _buildProfileSection(
                   context,
                   title: 'Address',
@@ -211,12 +219,13 @@ class DonorProfileScreen extends ConsumerWidget {
                     if (donorProfile?.country != null)
                       _buildInfoRow(context, 'Country', donorProfile!.country!),
                     if (donorProfile?.postalCode != null)
-                      _buildInfoRow(context, 'Postal Code', donorProfile!.postalCode!),
+                      _buildInfoRow(
+                          context, 'Postal Code', donorProfile!.postalCode!),
                   ],
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 _buildProfileSection(
                   context,
                   title: 'Preferences',
@@ -248,9 +257,9 @@ class DonorProfileScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Logout button
                 Center(
                   child: PrimaryButton(
@@ -265,7 +274,7 @@ class DonorProfileScreen extends ConsumerWidget {
                     width: 200,
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
               ],
             ),
@@ -274,7 +283,7 @@ class DonorProfileScreen extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildProfileSection(
     BuildContext context, {
     required String title,
@@ -302,8 +311,8 @@ class DonorProfileScreen extends ConsumerWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -314,7 +323,7 @@ class DonorProfileScreen extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildInfoRow(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -326,8 +335,12 @@ class DonorProfileScreen extends ConsumerWidget {
             child: Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-              ),
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.color
+                        ?.withOpacity(0.7),
+                  ),
             ),
           ),
           Expanded(
@@ -340,7 +353,7 @@ class DonorProfileScreen extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildToggleRow(
     BuildContext context,
     String label,

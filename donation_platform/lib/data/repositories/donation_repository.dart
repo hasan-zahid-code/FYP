@@ -2,7 +2,6 @@ import 'package:donation_platform/data/models/donation/donation_update.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:donation_platform/data/models/donation/donation.dart';
 import 'package:donation_platform/data/models/donation/donation_category.dart';
-import 'package:donation_platform/data/models/donation/donation_tracking.dart';
 import 'package:donation_platform/core/utils/exceptions.dart';
 import 'package:uuid/uuid.dart';
 
